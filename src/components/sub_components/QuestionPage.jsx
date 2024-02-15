@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {useContext} from "react";
 import useApp, {context} from "../../context/context_provider.js";
 import Footer from "../Footer.jsx";
@@ -10,32 +10,29 @@ function QuestionPage() {
   const currQuestion = questions[index];
   const buttonSelect = useRef([]);
   const hasAnswered = answer === null;
+  const [selected, setSelected] = useState([false, false, false, false]);
 
-  function handleClick(e, markedIndex) {
-
-    const button = buttonSelect.current[markedIndex];
-    const correct = buttonSelect.current[currQuestion.correctOption];
-
-    if (markedIndex === currQuestion.correctOption && hasAnswered === true) {
-      button.style.backgroundColor = "green";
-    } else {
-      correct.style.backgroundColor = "green";
-      button.style.backgroundColor = "red";
+  function handleClick(e, index) {
+    dispatch({type: "newAnswer", payload: index});
+    if (index !== currQuestion.correctOption) {
+      setSelected((curr) =>
+        curr.map((bool, ind) => (ind === index) && true)
+      );
     }
-
-    dispatch({type: "newAnswer", payload: markedIndex});
   }
+
+  const color = useMemo(() => {
+
+
+  }, [selected])
 
   const nextBtn = useRef(null);
 
   function handleNext(e) {
+    //nextBtn.current.classList.add("correct");
     dispatch({type: "nextQuestion"});
     console.log("Success");
   }
-
-  useEffect(() => {
-    buttonSelect.current.map((btn) => btn.backgroundColor = '')
-  }, [index, questions[index]]);
 
   return (
     <>
@@ -43,22 +40,21 @@ function QuestionPage() {
         <progress></progress>
         <p>Question <strong>{index + 1}</strong> / {length}</p>
         <p><strong>{points}</strong> / {totalPoints}</p>
-       </header>
+      </header>
       <div className="options">
         <h4>{currQuestion.question}</h4>
-        {currQuestion.options.map((option, markedIndex) => (
+        {currQuestion.options.map((option, index) => (
           <button
-            key={markedIndex}
-            className={`btn btn-option ${markedIndex === answer ? "answer" : null}
-            ${!hasAnswered
-              ? markedIndex === currQuestion.correctOption
-                ? ""
-                : ""
-              : null}`
-            }
-            disabled={!hasAnswered}
-            ref={(el) => buttonSelect.current[markedIndex] = el}
-            onClick={(e) => handleClick(e, markedIndex)}>
+            key={index}
+
+            className={`btn btn-option ${color}
+            ${index === answer && "answer"}
+            ${(!hasAnswered) ?
+              (index === currQuestion.correctOption) && "correct" : null}
+            `}
+
+            ref={(el) => buttonSelect.current[index] = el}
+            onClick={(e) => handleClick(e, index)}>
             {option}
           </button>
         ))}

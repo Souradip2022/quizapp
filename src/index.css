@@ -6,8 +6,8 @@
   --color-medium: #ced4da;
   --color-light: #f1f3f5;
 
-  --color-theme: #1098ad;
-  --color-accent: #ffa94d;
+  --color-theme: green;
+  --color-accent: red;
 }
 
 * {
@@ -155,16 +155,15 @@ progress {
   width: 100%;
   text-align: left;
 }
-
-.btn-option.correct {
-  background-color: var(--color-theme);
-  border: 2px solid var(--color-theme);
-  color: var(--color-light);
+.correct {
+  background-color: var(--color-theme)!important;
+  border: 2px solid var(--color-theme)!important;
+  color: var(--color-light)!important;
 }
-.btn-option.wrong {
-  background-color: var(--color-accent);
-  border: 2px solid var(--color-accent);
-  color: var(--color-darkest);
+.wrong {
+  background-color: var(--color-accent)!important;
+  border: 2px solid var(--color-accent)!important;
+  color: var(--color-darkest)!important;
 }
 
 .answer {
