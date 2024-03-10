@@ -6,7 +6,7 @@
   --color-medium: #ced4da;
   --color-light: #f1f3f5;
 
-  --color-theme: green;
+  --color-theme: #1098ad;
   --color-accent: red;
 }
 
@@ -140,8 +140,9 @@ progress {
   cursor: not-allowed;
 }
 
-.btn-ui {
-  float: right;
+.btn-gray {
+  filter: grayscale(1);
+  opacity: 0.5;
 }
 
 .options {
@@ -156,8 +157,8 @@ progress {
   text-align: left;
 }
 .correct {
-  background-color: var(--color-theme)!important;
-  border: 2px solid var(--color-theme)!important;
+  background-color: green!important;
+  border: 2px solid green!important;
   color: var(--color-light)!important;
 }
 .wrong {
@@ -255,4 +256,33 @@ progress {
 .counter * {
   font-size: inherit;
   padding: 0.8rem;
+}
+
+.response-sheet {
+  width: 100%;
+  min-height: 100vh;
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border-radius: 0.4rem;
+  /*border: 2px solid yellow;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: justify-all;
+
+  justify-content: space-between;
+  /*background-color: #282f53;*/
+
+}
+
+.response-btn {
+  display: block;
+  font-family: inherit;
+  font-size: 2rem;
+  border: 2px solid var(--color-dark);
+  background-color: var(--color-dark);
+  padding: 1.2rem 2.4rem;
+  cursor: pointer;
+  border-radius: 100px;
+  color: #f1f3f5;
 }

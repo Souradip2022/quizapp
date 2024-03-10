@@ -7,9 +7,10 @@ export const context = createContext({
   answer: null,
   points: 0,
   highestScore: 0,
-  secondsRemaining: null,
+  totalTime: null,
   correct: null,
-  totalPoints: 0
+  totalPoints: 0,
+  answeredIndex: []
 });
 
 export const ContextProvider = context.Provider;

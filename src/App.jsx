@@ -1,11 +1,14 @@
-import {useEffect, useReducer} from "react";
+import {useEffect, useReducer, useState} from "react";
 import {ContextProvider} from "./context/context_provider.js";
 import './index.css';
 import Header from "./components/Header.jsx";
-import Loader from "./components/sub_components/Loader.jsx";
-import Error from "./components/sub_components/Error.jsx";
-import StartPage from "./components/sub_components/StartPage.jsx";
-import QuestionPage from "./components/sub_components/QuestionPage.jsx";
+import Loader from "./components/Loader.jsx";
+import Error from "./components/Error.jsx";
+import StartPage from "./components/StartPage.jsx";
+import QuestionPage from "./components/QuestionPage.jsx";
+import FinishPage from "./components/FinishPage.jsx";
+import ResponsePage from "./components/ResponsePage.jsx";
+
 
 function App() {
 
@@ -18,8 +21,12 @@ function App() {
     answer: null,
     points: 0,
     highestScore: 0,
-    secondsRemaining: null,
+    totalTime: null,
   }
+
+  const [{questions, status, index, answer, points, highestScore,
+    totalTime}, dispatch] = useReducer(reducer, initialState);
+
 
   function reducer(state, action) {
     switch (action.type) {
@@ -40,7 +47,7 @@ function App() {
         return {
           ...state,
           status: "active",
-          timeRemaining: state.questions.length * TIME_PER_QUESTION
+          totalTime: state.questions.length * TIME_PER_QUESTION
         };
 
       case "newAnswer": {
@@ -60,15 +67,25 @@ function App() {
           answer: null
         };
 
-      /*case "finish":
-        return;
+      case "finish":
+        return {
+          ...state,
+          index: 0,
+          status: "complete"
+        }
 
       case "restart":
-        return;
+        return {
+          ...state,
+          points: 0,
+          status: "active"
+        }
 
-      case "tick":
-        return;*/
-
+      case "responsePage":
+        return {
+          ...state,
+          status: "response"
+        }
       default:
         throw new Error("Unknown error");
     }
@@ -101,37 +118,39 @@ function App() {
     return () => controller.abort();
   }, []);
 
-
-  const [{
-    questions,
-    status,
-    index,
-    answer,
-    points,
-    highestScore,
-    secondsRemaining
-  }, dispatch] = useReducer(reducer, initialState);
-
   let initVal = 0;
-  const totalPoints = questions.reduce((sum, curVal) => sum + curVal.points, initVal);
+  const totalPoints = questions.reduce((sum, currVal) => sum + currVal.points, initVal);
   //console.log(totalPoints);
 
+  useEffect(() => {
+    const len = questions.length;
+    if (index === len) dispatch({type: "finish"});
+  }, [index]);
+
+  const [answeredIndex, setAnsweredIndex] = useState([]);
+
   return (
-    <ContextProvider
-      value={{questions, status, index, answer, points, highestScore, secondsRemaining, dispatch, totalPoints}}>
-      <div className="app">
-        <Header/>
-        <main className="main">
-          {status === "loading" && (<Loader/>)}
+    <>
+      <ContextProvider
+        value={{questions, status, index, answer, points, highestScore, totalTime, dispatch, totalPoints, answeredIndex, setAnsweredIndex}}>
+        <div className="app">
+          <Header/>
+          <main className="main">
+            {status === "loading" && (<Loader/>)}
 
-          {status === "error" && (<Error/>)}
+            {status === "error" && (<Error/>)}
 
-          {status === "ready" && (<StartPage/>)}
+            {status === "ready" && (<StartPage/>)}
 
-          {status === "active" && (<QuestionPage/>)}
-        </main>
-      </div>
-    </ContextProvider>
+            {status === "active" && (<QuestionPage/>)}
+
+            {status === "complete" && (<FinishPage/>)}
+
+          </main>
+          {status === "response" && (<ResponsePage/>)}
+        </div>
+      </ContextProvider>
+    </>
   )
 }
 
