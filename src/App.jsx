@@ -94,7 +94,7 @@ function App() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch("http://localhost:8000/questions", {signal: controller.signal})
+    fetch("https://localhost:8000/questions", {signal: controller.signal})
       .then(res => {
         if (res.status !== 200) {
           throw new Error(`API request failed with status ${res.status}`);
