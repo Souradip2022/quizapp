@@ -8,9 +8,11 @@ import StartPage from "./components/StartPage.jsx";
 import QuestionPage from "./components/QuestionPage.jsx";
 import FinishPage from "./components/FinishPage.jsx";
 import ResponsePage from "./components/ResponsePage.jsx";
+import Questions from "../data/questions.json";
 
 
 function App() {
+  const questionArr = Questions.questions;
 
   const TIME_PER_QUESTION = 30;
   const initialState = {
@@ -27,6 +29,23 @@ function App() {
   const [{questions, status, index, answer, points, highestScore,
     totalTime}, dispatch] = useReducer(reducer, initialState);
 
+  // console.log(questionArr);
+  console.log(index);
+
+  useEffect(() => {
+    // This will now only run once, when the component mounts
+    if(questionArr){
+      dispatch({type: "dataReceived", payload: questionArr});
+    }
+    else{
+      dispatch({type: "dataFailed"})
+    }
+
+  }, []);
+  useEffect(() => {
+   const len = questionArr.length;
+   if (index === len) dispatch({type: "finish"});
+ }, [index]);
 
   function reducer(state, action) {
     switch (action.type) {
@@ -42,7 +61,6 @@ function App() {
           ...state,
           status: "error"
         };
-
       case "start":
         return {
           ...state,
@@ -90,8 +108,7 @@ function App() {
         throw new Error("Unknown error");
     }
   }
-
-  useEffect(() => {
+  /*useEffect(() => {
     const controller = new AbortController();
 
     fetch("https://localhost:8000/questions", {signal: controller.signal})
@@ -116,16 +133,14 @@ function App() {
       });
 
     return () => controller.abort();
-  }, []);
+
+
+}, []);*/
 
   let initVal = 0;
   const totalPoints = questions.reduce((sum, currVal) => sum + currVal.points, initVal);
   //console.log(totalPoints);
 
-  useEffect(() => {
-    const len = questions.length;
-    if (index === len) dispatch({type: "finish"});
-  }, [index]);
 
   const [answeredIndex, setAnsweredIndex] = useState([]);
 

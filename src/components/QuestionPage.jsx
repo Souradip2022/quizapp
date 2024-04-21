@@ -10,7 +10,7 @@ function QuestionPage() {
   const currQuestion = questions[index];
   const hasAnswered = answer !== null;
   //console.log(currQuestion.question);
-  console.log(answeredIndex);
+  // console.log(answeredIndex);
 
   return (
     <>
